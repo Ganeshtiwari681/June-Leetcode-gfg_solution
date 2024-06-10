@@ -1,0 +1,9 @@
+class Solution:
+    def heightChecker(self, h: List[int]) -> int:
+        exp=sorted(h)
+        n=len(h)
+        count=0
+        for i in range(n):
+            if h[i]!=exp[i]:
+                count+=1
+        return count
