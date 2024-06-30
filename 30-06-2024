@@ -1,0 +1,40 @@
+class DSU():
+    def __init__(self, n):
+        self.par = list(range(n))
+        self.rank = [1] * n
+        self.size = 1
+    
+    def find(self, u):
+        if u != self.par[u]:
+            self.par[u] = self.find(self.par[u])
+        return self.par[u]
+    
+    def union(self, u, v):
+        uu, vv = self.find(u), self.find(v)
+        if uu == vv:
+            return False
+        if self.rank[uu] > self.rank[vv]:
+            self.par[vv] = self.par[self.par[vv]]
+            self.par[vv] = uu
+        elif self.rank[vv] > self.par[uu]:
+            self.par[uu] = self.par[self.par[uu]]
+            self.par[uu] = vv
+        else:
+            self.par[uu] = vv
+            self.rank[vv] += 1
+        self.size += 1
+        return True
+
+class Solution:
+    def maxNumEdgesToRemove(self, n: int, edges: List[List[int]]) -> int:
+        uf1, uf2, ans = DSU(n), DSU(n), 0
+
+        for t, u, v in edges:
+            if t == 3 and (not uf1.union(u-1, v-1) or not uf2.union(u-1, v-1)):
+                ans += 1
+        for t, u, v in edges:
+            if t == 1 and not uf1.union(u-1, v-1):
+                ans += 1
+            elif t == 2 and not uf2.union(u-1, v-1):
+                ans += 1
+        return ans if uf1.size == n and uf2.size == n else -1
